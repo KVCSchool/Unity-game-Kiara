@@ -30,12 +30,15 @@ public class PlayerScript : MonoBehaviour
     private float _jumpPower = 24.0f;
     [SerializeField]
     private float _dashSpeed = 64.0f;
+    [SerializeField]
+    private float _acceleration = 120.0f;
 
     public bool Dashing { get => _dashing; }
 
     public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
     public float JumpPower { get => _jumpPower; set => _jumpPower = value; }
     public float DashSpeed { get => _dashSpeed; set => _dashSpeed = value; }
+    public float Acceleration { get => _acceleration; set => _acceleration = value; }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,18 +52,43 @@ public class PlayerScript : MonoBehaviour
         _dashAction.action.started += OnDashActionStarted;
     }
 
+    // Can the player accelerate into the given direction with the specified strength?
+    // Player can (de)accelerate while not dashing until it reaches its movement speed multiplied by strength.
+    // Direction is the sign of the movement action axis.
+    private bool CanAccelerateMovement(int direction, float strength)
+    {
+        if (_dashing)
+            return false;
+
+        if (direction == 0 || strength == 0.0f)
+            return false;
+
+        //max movement velocity already reached
+        if (direction == 1 && _rigidBody.linearVelocityX >= _movementSpeed * strength)
+            return false;
+
+        //min movement velocity already reached
+        if (direction == -1 && _rigidBody.linearVelocityX <= _movementSpeed * -strength)
+            return false;
+
+        return true;
+    }
+
     // Update is called once per frame
     private void Update()
     {
-        float movementDirection = _movementAction.action.ReadValue<float>();
+        //Update movement velocity
 
-        if (!_dashing)
-            _rigidBody.linearVelocityX = movementDirection * _movementSpeed;
+        float movementAxis = _movementAction.action.ReadValue<float>();
 
-        if (movementDirection > 0.0f)
-            _lastMovementDirection = 1;
-        else if (movementDirection < 0.0f)
-            _lastMovementDirection = -1;
+        //Important: sign returns 1 when movementAxis is 0.
+        int movementDirection = (int)Mathf.Sign(movementAxis);
+        float movementStrength = Mathf.Abs(movementAxis);
+
+        if (CanAccelerateMovement(movementDirection, movementStrength))
+            _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
+
+        _lastMovementDirection = movementDirection;
     }
 
     // Are we on the ground?
