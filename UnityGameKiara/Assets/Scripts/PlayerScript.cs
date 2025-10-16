@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
     //TODO: Coyote time?
-    //TODO: Dash bounces
 
     private bool _dashing = false;
     private int _lastMovementDirection = 0;
@@ -22,6 +21,12 @@ public class PlayerScript : MonoBehaviour
     private InputActionReference _jumpAction;
     [SerializeField]
     private InputActionReference _dashAction;
+
+    [Header("Physics Materials")]
+    [SerializeField]
+    private PhysicsMaterial2D _standardPhysics;
+    [SerializeField]
+    private PhysicsMaterial2D _dashPhysics;
 
     [Header("Player stats")]
     [SerializeField]
@@ -45,6 +50,7 @@ public class PlayerScript : MonoBehaviour
     private void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        _rigidBody.sharedMaterial = _standardPhysics;
 
         _boxCollider = GetComponent<BoxCollider2D>();
 
@@ -125,16 +131,24 @@ public class PlayerScript : MonoBehaviour
         Vector2 dashDirection = new(Mathf.Cos(dashAngle), Mathf.Sin(dashAngle));
 
         _rigidBody.linearVelocity = dashDirection * _dashSpeed;
+        _rigidBody.sharedMaterial = _dashPhysics;
+    }
+
+    // Collided with something while dashing.
+    private void OnDashCollision(Collision2D collision)
+    {
+        _dashing = false;
+        _rigidBody.linearVelocityX *= 1.5f;
+        _rigidBody.sharedMaterial = _standardPhysics;
+
+        //TODO: ground splat effect
+        Debug.Log("Player Splat!");
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //TODO: ground splat effect
         if (_dashing)
-        {
-            _dashing = false;
-            Debug.Log("Player Splat!");
-        }
+            OnDashCollision(collision);
     }
 
     private void OnJumpActionStarted(InputAction.CallbackContext obj)
