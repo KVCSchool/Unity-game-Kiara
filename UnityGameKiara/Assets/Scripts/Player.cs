@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private BoxCollider2D _groundCheck;
 
     private BoxCollider2D _boxCollider;
+    private CircleCollider2D _circleCollider;
 
     [Header("Player actions")]
     [SerializeField]
@@ -57,11 +58,12 @@ public class Player : MonoBehaviour
         _rigidBody.sharedMaterial = _standardPhysics;
 
         _boxCollider = GetComponent<BoxCollider2D>();
+        _circleCollider = GetComponent<CircleCollider2D>();
 
         _jumpAction.action.started += OnJumpActionStarted;
         _dashAction.action.started += OnDashActionStarted;
 
-        _boxCollider.enabled = true;
+        UpdateActiveHitbox();
     }
 
     // Can the player accelerate into the given direction with the specified strength?
@@ -120,10 +122,18 @@ public class Player : MonoBehaviour
         _rigidBody.linearVelocityY = _jumpPower;
     }
 
+    private void UpdateActiveHitbox()
+    {
+        _boxCollider.enabled = !_dashing;
+        _circleCollider.enabled = _dashing;
+    }
+
     // Dash in last moved direction
     private void Dash()
     {
         _dashing = true;
+
+        UpdateActiveHitbox();
 
         if (_lastMovementDirection == 0)
             _lastMovementDirection = 1;
@@ -141,6 +151,8 @@ public class Player : MonoBehaviour
     private void OnDashCollision(Collision2D collision)
     {
         _dashing = false;
+
+        UpdateActiveHitbox();
 
         _rigidBody.linearVelocityX *= 1.5f;
         _rigidBody.sharedMaterial = _standardPhysics;
