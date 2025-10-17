@@ -96,6 +96,11 @@ public class PlayerScript : MonoBehaviour
 
         if (movementStrength != 0.0f)
             _lastMovementDirection = movementDirection;
+
+        if (_dashing)
+            _rigidBody.linearDamping = 0.0f;
+        else
+            _rigidBody.linearDamping = (movementStrength != 0.0f) ? 0.25f : 0.75f;
     }
 
     // Are we on the ground?
