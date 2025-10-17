@@ -94,7 +94,8 @@ public class PlayerScript : MonoBehaviour
         if (CanAccelerateMovement(movementDirection, movementStrength))
             _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
 
-        _lastMovementDirection = movementDirection;
+        if (movementStrength != 0.0f)
+            _lastMovementDirection = movementDirection;
     }
 
     // Are we on the ground?
