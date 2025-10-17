@@ -754,7 +754,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.25
+  m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 5
   m_Material: {fileID: 6200000, guid: a461b2125b33fbc439f2f191c3b39451, type: 2}
@@ -836,6 +836,7 @@ MonoBehaviour:
   _jumpPower: 24
   _dashSpeed: 64
   _acceleration: 120
+  _friction: 60
 --- !u!58 &1563465114
 CircleCollider2D:
   m_ObjectHideFlags: 0

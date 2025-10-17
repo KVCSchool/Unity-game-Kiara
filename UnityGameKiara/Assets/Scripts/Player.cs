@@ -42,6 +42,8 @@ public class Player : MonoBehaviour
     private float _dashSpeed = 64.0f;
     [SerializeField]
     private float _acceleration = 120.0f;
+    [SerializeField]
+    private float _friction = 60.0f;
 
     public bool Dashing { get => _dashing; }
 
@@ -49,6 +51,7 @@ public class Player : MonoBehaviour
     public float JumpPower { get => _jumpPower; set => _jumpPower = value; }
     public float DashSpeed { get => _dashSpeed; set => _dashSpeed = value; }
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
+    public float Friction { get => _friction; set => _friction = value; }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -101,14 +104,12 @@ public class Player : MonoBehaviour
 
         if (CanAccelerateMovement(movementDirection, movementStrength))
             _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
-
+        //Horizontal friction, Unity's one causes the player to get stuck on walls :/
+        else if (_rigidBody.linearVelocityX != 0.0f)
+            _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - _friction * Time.deltaTime, 0.0f);
+        
         if (movementStrength != 0.0f)
             _lastMovementDirection = movementDirection;
-
-        if (_dashing)
-            _rigidBody.linearDamping = 0.0f;
-        else
-            _rigidBody.linearDamping = (movementStrength != 0.0f) ? 0.25f : 0.75f;
     }
 
     // Are we on the ground?
@@ -154,7 +155,7 @@ public class Player : MonoBehaviour
 
         UpdateActiveHitbox();
 
-        _rigidBody.linearVelocityX *= 1.5f;
+        _rigidBody.linearVelocityX *= 1.2f;
         _rigidBody.sharedMaterial = _standardPhysics;
 
         //TODO: ground splat effect
