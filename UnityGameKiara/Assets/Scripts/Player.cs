@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class PlayerScript : MonoBehaviour
+public class Player : MonoBehaviour
 {
     //TODO: Coyote time?
 
@@ -60,6 +60,8 @@ public class PlayerScript : MonoBehaviour
 
         _jumpAction.action.started += OnJumpActionStarted;
         _dashAction.action.started += OnDashActionStarted;
+
+        _boxCollider.enabled = true;
     }
 
     // Can the player accelerate into the given direction with the specified strength?
@@ -139,6 +141,7 @@ public class PlayerScript : MonoBehaviour
     private void OnDashCollision(Collision2D collision)
     {
         _dashing = false;
+
         _rigidBody.linearVelocityX *= 1.5f;
         _rigidBody.sharedMaterial = _standardPhysics;
 
