@@ -12,6 +12,10 @@ public class PlayerScript : MonoBehaviour
     private int _lastMovementDirection = 0;
 
     private Rigidbody2D _rigidBody;
+
+    [SerializeField]
+    private BoxCollider2D _groundCheck;
+
     private BoxCollider2D _boxCollider;
 
     [Header("Player actions")]
@@ -106,16 +110,7 @@ public class PlayerScript : MonoBehaviour
     // Are we on the ground?
     private bool IsGrounded()
     {
-        List<RaycastHit2D> results = new();
-
-        int worldLayerMask = LayerMask.NameToLayer("World");
-
-        ContactFilter2D filter = new();
-        filter.layerMask = new();
-        filter.layerMask.value = worldLayerMask;
-        filter.useLayerMask = true;
-
-        return _boxCollider.Cast(Vector2.down, results, 0.1f, true) >= 1;
+        return _groundCheck.IsTouchingLayers(_groundCheck.includeLayers);
     }
 
     private void Jump()
