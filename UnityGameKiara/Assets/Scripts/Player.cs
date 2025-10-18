@@ -1,9 +1,8 @@
-using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
+[RequireComponent(typeof(Health))]
 public class Player : MonoBehaviour
 {
     //TODO: Coyote time?
@@ -11,6 +10,7 @@ public class Player : MonoBehaviour
     private bool _dashing = false;
     private int _lastMovementDirection = 0;
 
+    private Health _health;
     private Rigidbody2D _rigidBody;
 
     [SerializeField]
@@ -53,10 +53,11 @@ public class Player : MonoBehaviour
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
     public float Friction { get => _friction; set => _friction = value; }
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        _health = GetComponent<Health>();
+
         _rigidBody = GetComponent<Rigidbody2D>();
         _rigidBody.sharedMaterial = _standardPhysics;
 
@@ -74,7 +75,7 @@ public class Player : MonoBehaviour
     // Direction is the sign of the movement action axis.
     private bool CanAccelerateMovement(int direction, float strength)
     {
-        if (_dashing)
+        if (_dashing || !_health.Alive)
             return false;
 
         if (direction == 0 || strength == 0.0f)
@@ -120,6 +121,9 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
+        if (!_health.Alive)
+            return;
+
         _rigidBody.linearVelocityY = _jumpPower;
     }
 
@@ -132,6 +136,9 @@ public class Player : MonoBehaviour
     // Dash in last moved direction
     private void Dash()
     {
+        if (!_health.Alive)
+            return;
+
         _dashing = true;
 
         UpdateActiveHitbox();
