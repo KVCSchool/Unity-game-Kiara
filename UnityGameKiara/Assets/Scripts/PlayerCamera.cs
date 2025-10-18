@@ -21,8 +21,6 @@ public class PlayerCamera : MonoBehaviour
     // Rigid body to follow.
     public Rigidbody2D Follow { get => _follow; set => _follow = value; }
 
-    
-
     private Vector3 SmoothDampVector3(Vector3 current, Vector3 target, ref Vector3 velocity, Vector3 smoothTimes)
     {
         return new(
