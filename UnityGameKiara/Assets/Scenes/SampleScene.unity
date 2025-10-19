@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 1069458540}
   - component: {fileID: 1069458539}
   - component: {fileID: 1069458541}
+  - component: {fileID: 1069458542}
   m_Layer: 6
   m_Name: Barbwire
   m_TagString: Untagged
@@ -857,6 +858,20 @@ BoxCollider2D:
   m_AutoTiling: 1
   m_Size: {x: 2.56, y: 0.71}
   m_EdgeRadius: 0
+--- !u!114 &1069458542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069458538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0aa6c94113940c4385c716e9efa84da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  _damage: 1
+  _pushbackStrength: 20
 --- !u!1 &1563465108
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _controllable: 1
+  _dashing: 0
   _groundCheck: {fileID: 2137409634}
   _movementAction: {fileID: -8514636514510317315, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   _jumpAction: {fileID: 3458947529860942483, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
@@ -1204,7 +1220,7 @@ Transform:
   m_GameObject: {fileID: 1660450097}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.2, y: -9.2, z: 0}
+  m_LocalPosition: {x: 33.69, y: -9.2, z: 0}
   m_LocalScale: {x: 3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
