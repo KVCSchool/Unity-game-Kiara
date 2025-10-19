@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
 [RequireComponent(typeof(Health))]
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     //TODO: Coyote time?
 
