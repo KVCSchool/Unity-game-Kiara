@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private PhysicsMaterial2D _dashPhysics;
 
-    [Header("Player stats")]
+    [Header("Player movement")]
     [SerializeField]
     private float _movementSpeed = 15.0f;
     [SerializeField]
@@ -118,9 +118,9 @@ public class PlayerController : MonoBehaviour
         return _groundCheck.IsTouchingLayers(_groundCheck.includeLayers);
     }
 
-    private void Jump()
+    public void Jump()
     {
-        if (!_controllable)
+        if (!_controllable || !IsGrounded())
             return;
 
         _rigidBody.linearVelocityY = _jumpPower;
@@ -133,9 +133,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // Dash in last moved direction
-    private void Dash()
+    public void Dash()
     {
-        if (!_controllable)
+        if (!_controllable || _dashing || IsGrounded())
             return;
 
         _dashing = true;
@@ -154,15 +154,26 @@ public class PlayerController : MonoBehaviour
         _rigidBody.sharedMaterial = _dashPhysics;
     }
 
-    // Collided with something while dashing.
-    private void OnDashCollision(Collision2D collision)
+    public void DashEnd()
     {
+        if (!_dashing)
+            return;
+
         _dashing = false;
 
         UpdateActiveHitbox();
 
-        _rigidBody.linearVelocityX *= 1.2f;
         _rigidBody.sharedMaterial = _standardPhysics;
+
+        Debug.Log("Dash ended!");
+    }
+
+    // Collided with something while dashing.
+    private void OnDashCollision(Collision2D collision)
+    {
+        DashEnd();
+
+        _rigidBody.linearVelocityX *= 1.2f;
 
         //TODO: ground splat effect
         Debug.Log("Player Splat!");
@@ -175,14 +186,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnJumpActionStarted(InputAction.CallbackContext obj)
-    {
-        if (IsGrounded())
-            Jump();
-    }
+        => Jump();
 
     private void OnDashActionStarted(InputAction.CallbackContext obj)
-    {
-        if (!IsGrounded() && !_dashing)
-            Dash();
-    }
+        => Dash();
 }
