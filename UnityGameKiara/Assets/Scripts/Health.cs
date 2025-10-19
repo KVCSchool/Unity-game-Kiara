@@ -8,6 +8,10 @@ public class Health : MonoBehaviour
     [SerializeField]
     private int _maxLives = 5;
 
+    [SerializeField]
+    private float _damageCooldownSeconds = 1.0f; 
+    private float _damageCountdownSeconds = 0.0f;
+
     private bool _alive = true;
 
     [SerializeField]
@@ -19,8 +23,16 @@ public class Health : MonoBehaviour
     public int MaxLives { get => _maxLives; set => _maxLives = value; }
     public bool Alive { get => _alive; set => _alive = value; }
 
+    public float DamageCooldownSeconds { get => _damageCooldownSeconds; set => _damageCooldownSeconds = value; }
+
     public UnityEvent<int> OnTakeDamage { get => _onTakeDamage; }
     public UnityEvent OnDeath { get => _onDeath; }
+
+    private void Update()
+    {
+        if (_damageCountdownSeconds > 0.0f)
+            _damageCountdownSeconds -= Time.deltaTime;
+    }
 
     public virtual void Die()
     {
@@ -34,10 +46,11 @@ public class Health : MonoBehaviour
 
     public virtual void Damage(int lives)
     {
-        if (!_alive)
+        if (!_alive || _damageCountdownSeconds > 0.0f)
             return;
 
         _lives = Mathf.Max(_lives - lives, 0);
+        _damageCountdownSeconds = _damageCooldownSeconds;
         _onTakeDamage.Invoke(lives);
         Debug.Log($"Lost {lives} lives! Remaining: {_lives}");
 

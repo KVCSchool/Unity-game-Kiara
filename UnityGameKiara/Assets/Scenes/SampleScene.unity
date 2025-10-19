@@ -1042,6 +1042,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   _lives: 5
   _maxLives: 5
+  _damageCooldownSeconds: 1
   _onTakeDamage:
     m_PersistentCalls:
       m_Calls:
