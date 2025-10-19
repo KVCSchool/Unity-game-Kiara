@@ -2,15 +2,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-[RequireComponent(typeof(Health))]
 public class PlayerController : MonoBehaviour
 {
     //TODO: Coyote time?
 
+    [SerializeField]
+    private bool _controllable = true;
     private bool _dashing = false;
     private int _lastMovementDirection = 0;
 
-    private Health _health;
     private Rigidbody2D _rigidBody;
 
     [SerializeField]
@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _friction = 60.0f;
 
+    public bool Controllable { get => _controllable; set => _controllable = value; }
     public bool Dashing { get => _dashing; }
 
     public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
@@ -56,8 +57,6 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        _health = GetComponent<Health>();
-
         _rigidBody = GetComponent<Rigidbody2D>();
         _rigidBody.sharedMaterial = _standardPhysics;
 
@@ -75,7 +74,7 @@ public class PlayerController : MonoBehaviour
     // Direction is the sign of the movement action axis.
     private bool CanAccelerateMovement(int direction, float strength)
     {
-        if (_dashing || !_health.Alive)
+        if (_dashing || !_controllable)
             return false;
 
         if (direction == 0 || strength == 0.0f)
@@ -121,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        if (!_health.Alive)
+        if (!_controllable)
             return;
 
         _rigidBody.linearVelocityY = _jumpPower;
@@ -136,7 +135,7 @@ public class PlayerController : MonoBehaviour
     // Dash in last moved direction
     private void Dash()
     {
-        if (!_health.Alive)
+        if (!_controllable)
             return;
 
         _dashing = true;
