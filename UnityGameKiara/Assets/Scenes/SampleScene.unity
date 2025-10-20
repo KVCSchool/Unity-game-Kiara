@@ -886,6 +886,7 @@ GameObject:
   - component: {fileID: 1563465113}
   - component: {fileID: 1563465114}
   - component: {fileID: 1563465115}
+  - component: {fileID: 1563465116}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -996,7 +997,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _controllable: 1
-  _dashing: 0
   _groundCheck: {fileID: 2137409634}
   _movementAction: {fileID: -8514636514510317315, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   _jumpAction: {fileID: 3458947529860942483, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
@@ -1089,6 +1089,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1563465116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1563465108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d8effa029fb66d44b93ef660571d9ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageHitbox
+  _health: {fileID: 1563465115}
 --- !u!1 &1660450097
 GameObject:
   m_ObjectHideFlags: 0

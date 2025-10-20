@@ -35,9 +35,9 @@ public class DamageTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Health health))
+        if (collision.gameObject.TryGetComponent(out DamageHitbox damageHitbox))
         {
-            health.Damage(_damage);
+            damageHitbox.Damage(_damage);
 
             if (collision.gameObject.TryGetComponent(out Rigidbody2D rigidBody))
                 PushRigidBodyBack(rigidBody);
