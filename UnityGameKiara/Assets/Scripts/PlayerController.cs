@@ -43,7 +43,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _acceleration = 120.0f;
     [SerializeField]
-    private float _friction = 60.0f;
+    private float _standardFriction = 60.0f;
+    [SerializeField]
+    private float _dashFriction = 15.0f;
 
     public bool Controllable { get => _controllable; set => _controllable = value; }
     public bool Dashing { get => _dashing; }
@@ -52,7 +54,8 @@ public class PlayerController : MonoBehaviour
     public float JumpPower { get => _jumpPower; set => _jumpPower = value; }
     public float DashSpeed { get => _dashSpeed; set => _dashSpeed = value; }
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
-    public float Friction { get => _friction; set => _friction = value; }
+    public float StandardFriction { get => _standardFriction; set => _standardFriction = value; }
+    public float DashFriction { get => _dashFriction; set => _dashFriction = value; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -64,7 +67,9 @@ public class PlayerController : MonoBehaviour
         _circleCollider = GetComponent<CircleCollider2D>();
 
         _jumpAction.action.started += OnJumpActionStarted;
+
         _dashAction.action.started += OnDashActionStarted;
+        _dashAction.action.canceled += OnDashActionCancelled;
 
         UpdateActiveHitbox();
     }
@@ -103,10 +108,15 @@ public class PlayerController : MonoBehaviour
         float movementStrength = Mathf.Abs(movementAxis);
 
         if (CanAccelerateMovement(movementDirection, movementStrength))
+        {
             _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
+        }
         //Horizontal friction, Unity's one causes the player to get stuck on walls :/
         else if (_rigidBody.linearVelocityX != 0.0f)
-            _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - _friction * Time.deltaTime, 0.0f);
+        {
+            float friction = (_dashing) ? _dashFriction : _standardFriction;
+            _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - friction * Time.deltaTime, 0.0f);
+        }
         
         if (movementStrength != 0.0f)
             _lastMovementDirection = movementDirection;
@@ -171,10 +181,7 @@ public class PlayerController : MonoBehaviour
     // Collided with something while dashing.
     private void OnDashCollision(Collision2D collision)
     {
-        DashEnd();
-
-        _rigidBody.linearVelocityX *= 1.2f;
-
+        //TODO: player attack
         //TODO: ground splat effect
         Debug.Log("Player Splat!");
     }
@@ -190,4 +197,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDashActionStarted(InputAction.CallbackContext obj)
         => Dash();
+
+    private void OnDashActionCancelled(InputAction.CallbackContext obj)
+        => DashEnd();
 }

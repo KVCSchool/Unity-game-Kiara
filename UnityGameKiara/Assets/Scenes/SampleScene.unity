@@ -871,6 +871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
   _damage: 1
+  _pushback: 1
   _pushbackStrength: 20
 --- !u!1 &1563465108
 GameObject:
@@ -1007,7 +1008,8 @@ MonoBehaviour:
   _jumpPower: 24
   _dashSpeed: 64
   _acceleration: 120
-  _friction: 60
+  _standardFriction: 60
+  _dashFriction: 20
 --- !u!58 &1563465114
 CircleCollider2D:
   m_ObjectHideFlags: 0
