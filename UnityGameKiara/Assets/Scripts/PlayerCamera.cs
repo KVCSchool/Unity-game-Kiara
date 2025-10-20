@@ -33,6 +33,9 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (_follow == null)
+            return;
+
         Vector3 targetOffset = new(0.0f, 0.0f, -10.0f);
 
         if (_follow.linearVelocityX != 0.0f)
