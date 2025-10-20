@@ -9,10 +9,13 @@ public class DamageTrigger : MonoBehaviour
     private int _damage = 1;
 
     [SerializeField]
+    private bool _pushback = true;
+    [SerializeField]
     private float _pushbackStrength = 5.0f;
 
     public int Damage { get => _damage; set => _damage = value; }
 
+    public bool Pushback { get => _pushback; set => _pushback = value; }
     public float PushbackStrength { get => _pushbackStrength; set => _pushbackStrength = value; }
 
     private void Start()
@@ -39,7 +42,7 @@ public class DamageTrigger : MonoBehaviour
         {
             damageHitbox.Damage(_damage);
 
-            if (collision.gameObject.TryGetComponent(out Rigidbody2D rigidBody))
+            if (_pushback && collision.gameObject.TryGetComponent(out Rigidbody2D rigidBody))
                 PushRigidBodyBack(rigidBody);
         }
     }
