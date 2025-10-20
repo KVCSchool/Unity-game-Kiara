@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
     // Direction is the sign of the movement action axis.
     private bool CanAccelerateMovement(int direction, float strength)
     {
-        if (_dashing || !_controllable)
+        if (!_controllable)
             return false;
 
         if (direction == 0 || strength == 0.0f)
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        if (!_controllable || !IsGrounded())
+        if (!_controllable || !IsGrounded() || _dashing)
             return;
 
         _rigidBody.linearVelocityY = _jumpPower;
