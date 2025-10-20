@@ -54,5 +54,8 @@ public class RespawnController : MonoBehaviour
     }
 
     private void OnPlayerDeath()
-        => _playerAlive = false;
+    {
+        _playerAlive = false;
+        _playerDeathDeltaTime = 0.0f;
+    }
 }
