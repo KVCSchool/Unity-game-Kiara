@@ -107,6 +107,10 @@ public class PlayerController : MonoBehaviour
         int movementDirection = (int)Mathf.Sign(movementAxis);
         float movementStrength = Mathf.Abs(movementAxis);
 
+        //automatically exit dash form if too slow
+        if (_dashing && Mathf.Abs(_rigidBody.linearVelocity.magnitude) < 0.5f )
+            DashEnd();
+
         if (CanAccelerateMovement(movementDirection, movementStrength))
         {
             _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
@@ -117,6 +121,7 @@ public class PlayerController : MonoBehaviour
             float friction = (_dashing) ? _dashFriction : _standardFriction;
             _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - friction * Time.deltaTime, 0.0f);
         }
+
         
         if (movementStrength != 0.0f)
             _lastMovementDirection = movementDirection;
