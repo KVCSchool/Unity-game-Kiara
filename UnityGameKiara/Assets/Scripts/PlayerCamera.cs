@@ -14,6 +14,8 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 _offset = Vector3.zero;
     private Vector3 _offsetVelocity = Vector3.zero;
 
+    private Vector2Int _lookDirection = Vector2Int.zero;
+
     // Smoothing times per axis for offset smooth damping.
     [SerializeField]
     private Vector3 _smoothTimes = new(0.3f, 2.0f, 0.0f);
@@ -30,19 +32,26 @@ public class PlayerCamera : MonoBehaviour
             );
     }
 
+    private void UpdateLookDirection()
+    {
+        if (Mathf.Abs(_follow.linearVelocityX) >= 2.0f)
+            _lookDirection.x = (int)Mathf.Sign(_follow.linearVelocityX);
+
+        if (Mathf.Abs(_follow.linearVelocityY) >= 2.0f)
+            _lookDirection.y = (int)Mathf.Sign(_follow.linearVelocityY);
+        else
+            _lookDirection.y = 0;
+    }
+
     // Update is called once per frame
     private void Update()
     {
         if (_follow == null)
             return;
 
-        Vector3 targetOffset = new(0.0f, 0.0f, -10.0f);
+        UpdateLookDirection();
 
-        if (_follow.linearVelocityX != 0.0f)
-            targetOffset.x = Mathf.Sign(_follow.linearVelocityX) * 6.0f;
-
-        if (_follow.linearVelocityY != 0.0f)
-            targetOffset.y = Mathf.Sign(_follow.linearVelocityY) * 3.0f;
+        Vector3 targetOffset = new(_lookDirection.x * 4.0f, _lookDirection.y * 3.0f, -10.0f);
 
         _offset = SmoothDampVector3(_offset, targetOffset, ref _offsetVelocity, _smoothTimes);
 
