@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
     private PlayerCamera _playerCamera;
     [SerializeField]
     private RespawnController _respawnController;
+    [SerializeField]
+    private LifeBar _lifeBar;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -20,5 +22,6 @@ public class GameController : MonoBehaviour
     private void OnPlayerSpawn(GameObject player)
     {
         _playerCamera.Follow = player.GetComponent<Rigidbody2D>();
+        _lifeBar.Health = player.GetComponent<Health>();
     }
 }
