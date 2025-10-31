@@ -4,6 +4,7 @@ using UnityEngine;
 public class LifeBar : MonoBehaviour
 {
     // Health to track.
+    [SerializeField]
     private Health _health = null;
 
     private readonly List<GameObject> _lifeIcons = new();
@@ -14,25 +15,18 @@ public class LifeBar : MonoBehaviour
     // Health to track.
     public Health Health 
     { 
-        get => _health; 
+        get => _health;
         set
         {
             if (_health == value)
                 return;
 
             if (_health != null)
-            {
-                _health.OnCurrentChanged.RemoveListener(OnCurrentChanged);
-                _health.OnMaxChanged.RemoveListener(OnMaxChanged);
-            }
+                FiniHealth(_health);
 
             _health = value;
 
-            _health.OnCurrentChanged.AddListener(OnCurrentChanged);
-            _health.OnMaxChanged.AddListener(OnMaxChanged);
-
-            OnMaxChanged(_health.Max);
-            OnCurrentChanged(_health.Current);
+            InitHealth(_health);
         }
     }
 
@@ -40,6 +34,24 @@ public class LifeBar : MonoBehaviour
     private void Start()
     {
         _lifeIcon.SetActive(false);
+
+        if (_health != null)
+            InitHealth(_health);
+    }
+
+    private void InitHealth(Health health)
+    {
+        _health.OnCurrentChanged.AddListener(OnCurrentChanged);
+        _health.OnMaxChanged.AddListener(OnMaxChanged);
+
+        OnMaxChanged(_health.Max);
+        OnCurrentChanged(_health.Current);
+    }
+
+    private void FiniHealth(Health health)
+    {
+        _health.OnCurrentChanged.RemoveListener(OnCurrentChanged);
+        _health.OnMaxChanged.RemoveListener(OnMaxChanged);
     }
 
     private void DestroyAllLifeIcons()
