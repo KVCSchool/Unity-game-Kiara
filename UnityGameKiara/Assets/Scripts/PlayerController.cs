@@ -148,19 +148,23 @@ public class PlayerController : MonoBehaviour
     // Dash in last moved direction
     public void Dash()
     {
-        if (!_controllable || _dashing || _grounded || !_canDash)
+        if (!_controllable || _dashing || !_canDash)
             return;
 
         _dashing = true;
-        _canDash = false;
+        _canDash = _grounded;
 
         UpdateActiveHitbox();
 
         if (_lastMovementDirection == 0)
             _lastMovementDirection = 1;
 
-        //down-left or down-right depending on last direction moved
-        float dashAngle = (_lastMovementDirection == 1) ? -Mathf.PI / 4.0f : -Mathf.PI / 4.0f * 3.0f;
+        //dash horizontally or down diagonally (to the right)
+        float dashAngle = (_grounded) ? 0.0f : -Mathf.PI / 4.0f;
+
+        //if moving left, flip angle horizontally (to the left)
+        if (_lastMovementDirection == -1)
+            dashAngle = Mathf.PI - dashAngle;
 
         Vector2 dashDirection = new(Mathf.Cos(dashAngle), Mathf.Sin(dashAngle));
 
