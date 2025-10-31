@@ -8,10 +8,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private bool _controllable = true;
-    private bool _dashing = false;
+
     private int _lastMovementDirection = 0;
 
+    private bool _canDash = true;
+
     private bool _grounded = false;
+    private bool _dashing = false;
 
     private Rigidbody2D _rigidBody;
 
@@ -145,10 +148,11 @@ public class PlayerController : MonoBehaviour
     // Dash in last moved direction
     public void Dash()
     {
-        if (!_controllable || _dashing || _grounded)
+        if (!_controllable || _dashing || _grounded || !_canDash)
             return;
 
         _dashing = true;
+        _canDash = false;
 
         UpdateActiveHitbox();
 
@@ -183,6 +187,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player became grounded!");
 
         _grounded = true;
+        _canDash = true;
     }
 
     public void OnBecameAirbone()
@@ -195,6 +200,8 @@ public class PlayerController : MonoBehaviour
     // Collided with something while dashing.
     private void OnDashCollision(Collision2D collision)
     {
+        _canDash = true;
+
         //TODO: player attack
         //TODO: ground splat effect
         Debug.Log("Player Splat!");
