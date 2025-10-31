@@ -13,6 +13,10 @@ public class Health : MonoBehaviour
     private float _damageCountdownSeconds = 0.0f;
 
     [SerializeField]
+    private UnityEvent<int> _onCurrentChanged;
+    [SerializeField]
+    private UnityEvent<int> _onMaxChanged;
+    [SerializeField]
     private UnityEvent<int> _onTakeDamage;
     [SerializeField]
     private UnityEvent _onDeath;
@@ -28,6 +32,7 @@ public class Health : MonoBehaviour
             int old = _current;
 
             _current = value;
+            _onCurrentChanged.Invoke(_current);
 
             if (_current < old)
                 _onTakeDamage.Invoke(_current - old);
@@ -45,6 +50,7 @@ public class Health : MonoBehaviour
             if (_max != value)
             {
                 _max = value;
+                _onMaxChanged.Invoke(_max);
             }
         }
     }
@@ -53,6 +59,8 @@ public class Health : MonoBehaviour
 
     public float DamageCooldownSeconds { get => _damageCooldownSeconds; set => _damageCooldownSeconds = value; }
 
+    public UnityEvent<int> OnCurrentChanged { get => _onCurrentChanged; }
+    public UnityEvent<int> OnMaxChanged { get => _onMaxChanged; }
     public UnityEvent<int> OnTakeDamage { get => _onTakeDamage; }
     public UnityEvent OnDeath { get => _onDeath; }
 
