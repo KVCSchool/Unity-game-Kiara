@@ -4,24 +4,52 @@ using UnityEngine.Events;
 public class Health : MonoBehaviour
 {
     [SerializeField]
-    private int _lives = 5;
+    private int _current = 5;
     [SerializeField]
-    private int _maxLives = 5;
+    private int _max = 5;
 
     [SerializeField]
     private float _damageCooldownSeconds = 1.0f; 
     private float _damageCountdownSeconds = 0.0f;
-
-    private bool _alive = true;
 
     [SerializeField]
     private UnityEvent<int> _onTakeDamage;
     [SerializeField]
     private UnityEvent _onDeath;
 
-    public int Lives { get => _lives; set => _lives = value; }
-    public int MaxLives { get => _maxLives; set => _maxLives = value; }
-    public bool Alive { get => _alive; set => _alive = value; }
+    public int Current
+    { 
+        get => _current;
+        set
+        {
+            if (_current == value)
+                return;
+
+            int old = _current;
+
+            _current = value;
+
+            if (_current < old)
+                _onTakeDamage.Invoke(_current - old);
+
+            if (_current == 0)
+                Die();
+        }
+    }
+
+    public int Max
+    { 
+        get => _max; 
+        set
+        {
+            if (_max != value)
+            {
+                _max = value;
+            }
+        }
+    }
+
+    public bool Alive { get => Current > 0; }
 
     public float DamageCooldownSeconds { get => _damageCooldownSeconds; set => _damageCooldownSeconds = value; }
 
@@ -38,23 +66,17 @@ public class Health : MonoBehaviour
     {
         Debug.Log("Died!");
         
-        _lives = 0;
-        _alive = false;
+        Current = 0;
 
         _onDeath.Invoke();
     }
 
     public virtual void Damage(int lives)
     {
-        if (!_alive || _damageCountdownSeconds > 0.0f)
+        if (!Alive || _damageCountdownSeconds > 0.0f)
             return;
 
-        _lives = Mathf.Max(_lives - lives, 0);
+        Current = Mathf.Max(Current - lives, 0);
         _damageCountdownSeconds = _damageCooldownSeconds;
-        _onTakeDamage.Invoke(lives);
-        Debug.Log($"Lost {lives} lives! Remaining: {_lives}");
-
-        if (_lives == 0)
-            Die();
     }
 }
