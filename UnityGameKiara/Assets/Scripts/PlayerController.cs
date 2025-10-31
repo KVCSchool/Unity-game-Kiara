@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private bool _dashing = false;
     private int _lastMovementDirection = 0;
 
+    private bool _grounded = false;
+
     private Rigidbody2D _rigidBody;
 
     [SerializeField]
@@ -121,21 +123,14 @@ public class PlayerController : MonoBehaviour
             float friction = (_dashing) ? _dashFriction : _standardFriction;
             _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - friction * Time.deltaTime, 0.0f);
         }
-
         
         if (movementStrength != 0.0f)
             _lastMovementDirection = movementDirection;
     }
 
-    // Are we on the ground?
-    private bool IsGrounded()
-    {
-        return _groundCheck.IsTouchingLayers(_groundCheck.includeLayers);
-    }
-
     public void Jump()
     {
-        if (!_controllable || !IsGrounded() || _dashing)
+        if (!_controllable || !_grounded || _dashing)
             return;
 
         _rigidBody.linearVelocityY = _jumpPower;
@@ -150,7 +145,7 @@ public class PlayerController : MonoBehaviour
     // Dash in last moved direction
     public void Dash()
     {
-        if (!_controllable || _dashing || IsGrounded())
+        if (!_controllable || _dashing || _grounded)
             return;
 
         _dashing = true;
@@ -181,6 +176,20 @@ public class PlayerController : MonoBehaviour
         _rigidBody.sharedMaterial = _standardPhysics;
 
         Debug.Log("Dash ended!");
+    }
+
+    public void OnBecameGrounded()
+    {
+        Debug.Log("Player became grounded!");
+
+        _grounded = true;
+    }
+
+    public void OnBecameAirbone()
+    {
+        Debug.Log("Player became airbone!");
+
+        _grounded = false;
     }
 
     // Collided with something while dashing.
