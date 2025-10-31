@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private bool _grounded = false;
     private bool _dashing = false;
 
+    private float _dashCooldown = 0.0f;
+
     private Rigidbody2D _rigidBody;
 
     [SerializeField]
@@ -51,6 +53,8 @@ public class PlayerController : MonoBehaviour
     private float _standardFriction = 60.0f;
     [SerializeField]
     private float _dashFriction = 15.0f;
+    [SerializeField]
+    private float _dashCooldownDurationSeconds = 0.25f;
 
     public bool Controllable { get => _controllable; set => _controllable = value; }
     public bool Dashing { get => _dashing; }
@@ -61,6 +65,7 @@ public class PlayerController : MonoBehaviour
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
     public float StandardFriction { get => _standardFriction; set => _standardFriction = value; }
     public float DashFriction { get => _dashFriction; set => _dashFriction = value; }
+    public float DashCooldownDurationSeconds { get => _dashFriction; set => _dashFriction = value; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -104,6 +109,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (_dashCooldown > 0.0f)
+            _dashCooldown -= Time.deltaTime;
+
         //Update movement velocity
 
         float movementAxis = _movementAction.action.ReadValue<float>();
@@ -148,7 +156,7 @@ public class PlayerController : MonoBehaviour
     // Dash in last moved direction
     public void Dash()
     {
-        if (!_controllable || _dashing || !_canDash)
+        if (!_controllable || _dashing || !_canDash || _dashCooldown > 0.0f)
             return;
 
         _dashing = true;
@@ -178,6 +186,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         _dashing = false;
+        _dashCooldown = _dashCooldownDurationSeconds;
 
         UpdateActiveHitbox();
 

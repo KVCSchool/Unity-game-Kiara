@@ -227,6 +227,7 @@ MonoBehaviour:
   _acceleration: 120
   _standardFriction: 60
   _dashFriction: 20
+  _dashCooldownDurationSeconds: 0.25
 --- !u!58 &4744002937012359194
 CircleCollider2D:
   m_ObjectHideFlags: 0
