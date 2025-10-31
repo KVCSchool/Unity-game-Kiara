@@ -47,9 +47,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float _movementSpeed = 15.0f;
     [SerializeField]
+    private float _standardMovementSpeed = 15.0f;
+    [SerializeField]
+    private float _dashMovementSpeed = 5.0f;
+    [SerializeField]
     private float _jumpPower = 24.0f;
     [SerializeField]
-    private float _dashSpeed = 64.0f;
+    private float _dashStrength = 64.0f;
     [SerializeField]
     private float _acceleration = 120.0f;
     [SerializeField]
@@ -63,8 +67,11 @@ public class PlayerController : MonoBehaviour
     public bool Dashing { get => _dashing; }
 
     public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
+    public float StandardMovementSpeed { get => _standardMovementSpeed; set => _standardMovementSpeed = value; }
+    public float DashMovementSpeed { get => _dashMovementSpeed; set => _dashMovementSpeed = value; }
+
     public float JumpPower { get => _jumpPower; set => _jumpPower = value; }
-    public float DashSpeed { get => _dashSpeed; set => _dashSpeed = value; }
+    public float DashStrength { get => _dashStrength; set => _dashStrength = value; }
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
     public float StandardFriction { get => _standardFriction; set => _standardFriction = value; }
     public float DashFriction { get => _dashFriction; set => _dashFriction = value; }
@@ -167,6 +174,8 @@ public class PlayerController : MonoBehaviour
         _dashing = true;
         _canDash = _grounded;
 
+        _movementSpeed = _dashMovementSpeed;
+
         UpdateActiveHitbox();
 
         //dash horizontally or down diagonally (to the right)
@@ -178,7 +187,7 @@ public class PlayerController : MonoBehaviour
 
         Vector2 dashDirection = new(Mathf.Cos(dashAngle), Mathf.Sin(dashAngle));
 
-        _rigidBody.linearVelocity = dashDirection * _dashSpeed;
+        _rigidBody.linearVelocity = dashDirection * _dashStrength;
         _rigidBody.sharedMaterial = _dashPhysics;
 
         _animator.SetBool("Dashing", true);
@@ -191,6 +200,7 @@ public class PlayerController : MonoBehaviour
 
         _dashing = false;
         _dashCooldown = _dashCooldownDurationSeconds;
+        _movementSpeed = _standardMovementSpeed;
 
         UpdateActiveHitbox();
 
