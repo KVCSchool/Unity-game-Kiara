@@ -2,9 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
+[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
     //TODO: Coyote time?
+    //TODO: this is starting to do a lot of things at once, might be time to separate this into multiple behaviours.
 
     [SerializeField]
     private bool _controllable = true;
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float _dashCooldown = 0.0f;
 
     private Rigidbody2D _rigidBody;
+    private Animator _animator;
 
     [SerializeField]
     private BoxCollider2D _groundCheck;
@@ -72,6 +75,8 @@ public class PlayerController : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _rigidBody.sharedMaterial = _standardPhysics;
+
+        _animator = GetComponent<Animator>();
 
         _boxCollider = GetComponent<BoxCollider2D>();
         _circleCollider = GetComponent<CircleCollider2D>();
@@ -164,9 +169,6 @@ public class PlayerController : MonoBehaviour
 
         UpdateActiveHitbox();
 
-        if (_lastMovementDirection == 0)
-            _lastMovementDirection = 1;
-
         //dash horizontally or down diagonally (to the right)
         float dashAngle = (_grounded) ? 0.0f : -Mathf.PI / 4.0f;
 
@@ -178,6 +180,8 @@ public class PlayerController : MonoBehaviour
 
         _rigidBody.linearVelocity = dashDirection * _dashSpeed;
         _rigidBody.sharedMaterial = _dashPhysics;
+
+        _animator.SetBool("Dashing", true);
     }
 
     public void DashEnd()
@@ -191,6 +195,8 @@ public class PlayerController : MonoBehaviour
         UpdateActiveHitbox();
 
         _rigidBody.sharedMaterial = _standardPhysics;
+
+        _animator.SetBool("Dashing", false);
 
         Debug.Log("Dash ended!");
     }
