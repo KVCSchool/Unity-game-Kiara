@@ -7,7 +7,7 @@ public class RespawnController : MonoBehaviour
     private GameObject _playerPrefab;
 
     [SerializeField]
-    private Transform _spawnPoint;
+    private Vector3 _spawnPoint = Vector3.zero;
     [SerializeField]
     private float _respawnDelaySeconds;
 
@@ -18,7 +18,7 @@ public class RespawnController : MonoBehaviour
     [SerializeField]
     private UnityEvent<GameObject> _onPlayerSpawn;
 
-    public Transform SpawnPoint { get => _spawnPoint; set => _spawnPoint = value; }
+    public Vector3 SpawnPoint { get => _spawnPoint; set => _spawnPoint = value; }
     public float RespawnDelaySeconds { get => _respawnDelaySeconds; set => _respawnDelaySeconds = value; }
 
     public UnityEvent<GameObject> OnPlayerSpawn { get => _onPlayerSpawn; }
@@ -37,7 +37,7 @@ public class RespawnController : MonoBehaviour
 
     public void SpawnPlayer()
     {
-        _player = Instantiate(_playerPrefab, _spawnPoint.position, _spawnPoint.rotation);
+        _player = Instantiate(_playerPrefab, _spawnPoint, new());
         _playerAlive = true;
 
         Health playerHealth = _player.GetComponent<Health>();
