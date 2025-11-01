@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2c49cf28dc983cc448540a498b9e5fe3, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.21960784, g: 0.54509807, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -223,8 +223,10 @@ MonoBehaviour:
   _standardPhysics: {fileID: 6200000, guid: a461b2125b33fbc439f2f191c3b39451, type: 2}
   _dashPhysics: {fileID: 6200000, guid: 12987aac5c6ba064787d312b37975b76, type: 2}
   _movementSpeed: 15
+  _standardMovementSpeed: 15
+  _dashMovementSpeed: 5
   _jumpPower: 24
-  _dashSpeed: 64
+  _dashStrength: 64
   _acceleration: 120
   _standardFriction: 60
   _dashFriction: 20
@@ -277,9 +279,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af5a870e12ce08489e4bf10d239f377, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  _lives: 5
-  _maxLives: 5
+  _current: 5
+  _max: 5
   _damageCooldownSeconds: 1
+  _onCurrentChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  _onMaxChanged:
+    m_PersistentCalls:
+      m_Calls: []
   _onTakeDamage:
     m_PersistentCalls:
       m_Calls:
