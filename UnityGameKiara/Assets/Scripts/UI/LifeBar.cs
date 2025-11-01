@@ -22,11 +22,11 @@ public class LifeBar : MonoBehaviour
                 return;
 
             if (_health != null)
-                FiniHealth(_health);
+                FiniHealth();
 
             _health = value;
 
-            InitHealth(_health);
+            InitHealth();
         }
     }
 
@@ -36,19 +36,20 @@ public class LifeBar : MonoBehaviour
         _lifeIcon.SetActive(false);
 
         if (_health != null)
-            InitHealth(_health);
+            InitHealth();
     }
 
-    private void InitHealth(Health health)
+    private void InitHealth()
     {
         _health.OnCurrentChanged.AddListener(OnCurrentChanged);
         _health.OnMaxChanged.AddListener(OnMaxChanged);
 
-        OnMaxChanged(_health.Max);
-        OnCurrentChanged(_health.Current);
+        DestroyAllLifeIcons();
+        CreateLifeIcons();
+        UpdateLifeIcons();
     }
 
-    private void FiniHealth(Health health)
+    private void FiniHealth()
     {
         _health.OnCurrentChanged.RemoveListener(OnCurrentChanged);
         _health.OnMaxChanged.RemoveListener(OnMaxChanged);
@@ -62,21 +63,25 @@ public class LifeBar : MonoBehaviour
         _lifeIcons.Clear();
     }
 
-    private void CreateLifeIcons(int num)
+    private void CreateLifeIcons()
     {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < _health.Max; i++)
             _lifeIcons.Add(Instantiate(_lifeIcon, transform));
     }
 
-    private void OnCurrentChanged(int current)
+    private void UpdateLifeIcons()
     {
         for (int i = 0; i < _lifeIcons.Count; i++)
-            _lifeIcons[i].SetActive(i < current);
+            _lifeIcons[i].SetActive(i < _health.Current);
     }
+
+    private void OnCurrentChanged(int current)
+        => UpdateLifeIcons();
 
     private void OnMaxChanged(int max)
     {
         DestroyAllLifeIcons();
-        CreateLifeIcons(max);
+        CreateLifeIcons();
+        UpdateLifeIcons();
     }
 }
