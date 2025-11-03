@@ -40,29 +40,26 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Top
-    uniqueID: 4231893959
-    locked: 0
-  - name: Foreground
-    uniqueID: 555246905
-    locked: 0
-  - name: Default
-    uniqueID: 0
-    locked: 0
-  - name: Middleground
-    uniqueID: 1038976271
-    locked: 0
-  - name: Entities
-    uniqueID: 3647851273
-    locked: 0
-  - name: Obstacles
-    uniqueID: 4258498759
+  - name: Bottom
+    uniqueID: 4280405965
     locked: 0
   - name: Background
     uniqueID: 1758511277
     locked: 0
-  - name: Bottom
-    uniqueID: 4280405965
+  - name: Obstacles
+    uniqueID: 4258498759
+    locked: 0
+  - name: Entities
+    uniqueID: 3647851273
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 555246905
+    locked: 0
+  - name: Top
+    uniqueID: 4231893959
     locked: 0
   m_RenderingLayers:
   - Default
