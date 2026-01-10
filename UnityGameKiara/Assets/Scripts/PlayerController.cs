@@ -173,6 +173,7 @@ public class PlayerController : MonoBehaviour
 
         _dashing = true;
         _canDash = _grounded;
+        _dashCooldown = _dashCooldownDurationSeconds;
 
         _movementSpeed = _dashMovementSpeed;
 
@@ -199,7 +200,6 @@ public class PlayerController : MonoBehaviour
             return;
 
         _dashing = false;
-        _dashCooldown = _dashCooldownDurationSeconds;
         _movementSpeed = _standardMovementSpeed;
 
         UpdateActiveHitbox();
