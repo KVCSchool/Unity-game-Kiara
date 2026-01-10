@@ -231,7 +231,10 @@ public class PlayerController : MonoBehaviour
     {
         _canDash = true;
 
-        //TODO: player attack
+        //player attack
+        if (collision.gameObject.TryGetComponent(out DamageHitbox hitbox))
+            hitbox.Damage(1);
+
         //TODO: ground splat effect
         Debug.Log("Player Splat!");
     }
