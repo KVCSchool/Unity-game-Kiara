@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(GroundedMovement))]
 public class PlayerController : MonoBehaviour
 {
     //TODO: Coyote time?
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D _boxCollider;
     private CircleCollider2D _circleCollider;
 
+    private GroundedMovement _movement;
+
     [Header("Player actions")]
     [SerializeField]
     private InputActionReference _movementAction;
@@ -45,17 +48,11 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player movement")]
     [SerializeField]
-    private float _movementSpeed = 15.0f;
-    [SerializeField]
     private float _standardMovementSpeed = 15.0f;
     [SerializeField]
     private float _dashMovementSpeed = 5.0f;
     [SerializeField]
-    private float _jumpPower = 24.0f;
-    [SerializeField]
     private float _dashStrength = 64.0f;
-    [SerializeField]
-    private float _acceleration = 120.0f;
     [SerializeField]
     private float _standardFriction = 60.0f;
     [SerializeField]
@@ -66,13 +63,10 @@ public class PlayerController : MonoBehaviour
     public bool Controllable { get => _controllable; set => _controllable = value; }
     public bool Dashing { get => _dashing; }
 
-    public float MovementSpeed { get => _movementSpeed; set => _movementSpeed = value; }
     public float StandardMovementSpeed { get => _standardMovementSpeed; set => _standardMovementSpeed = value; }
     public float DashMovementSpeed { get => _dashMovementSpeed; set => _dashMovementSpeed = value; }
 
-    public float JumpPower { get => _jumpPower; set => _jumpPower = value; }
     public float DashStrength { get => _dashStrength; set => _dashStrength = value; }
-    public float Acceleration { get => _acceleration; set => _acceleration = value; }
     public float StandardFriction { get => _standardFriction; set => _standardFriction = value; }
     public float DashFriction { get => _dashFriction; set => _dashFriction = value; }
     public float DashCooldownDurationSeconds { get => _dashFriction; set => _dashFriction = value; }
@@ -82,6 +76,8 @@ public class PlayerController : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _rigidBody.sharedMaterial = _standardPhysics;
+
+        _movement = GetComponent<GroundedMovement>();
 
         _animator = GetComponent<Animator>();
 
@@ -96,58 +92,26 @@ public class PlayerController : MonoBehaviour
         UpdateActiveHitbox();
     }
 
-    // Can the player accelerate into the given direction with the specified strength?
-    // Player can (de)accelerate while not dashing until it reaches its movement speed multiplied by strength.
-    // Direction is the sign of the movement action axis.
-    private bool CanAccelerateMovement(int direction, float strength)
-    {
-        if (!_controllable)
-            return false;
-
-        if (direction == 0 || strength == 0.0f)
-            return false;
-
-        //max movement velocity already reached
-        if (direction == 1 && _rigidBody.linearVelocityX >= _movementSpeed * strength)
-            return false;
-
-        //min movement velocity already reached
-        if (direction == -1 && _rigidBody.linearVelocityX <= _movementSpeed * -strength)
-            return false;
-
-        return true;
-    }
-
     // Update is called once per frame
     private void Update()
     {
         if (_dashCooldown > 0.0f)
             _dashCooldown -= Time.deltaTime;
 
+        //automatically exit dash form if too slow
+        if (_dashing && Mathf.Abs(_movement.Velocity.magnitude) < 0.5f)
+            DashEnd();
+
         //Update movement velocity
 
         float movementAxis = _movementAction.action.ReadValue<float>();
 
         //Important: sign returns 1 when movementAxis is 0.
-        int movementDirection = (int)Mathf.Sign(movementAxis);
-        float movementStrength = Mathf.Abs(movementAxis);
+        int movementDirection = (movementAxis != 0.0f) ? (int)Mathf.Sign(movementAxis) : 0;
 
-        //automatically exit dash form if too slow
-        if (_dashing && Mathf.Abs(_rigidBody.linearVelocity.magnitude) < 0.5f )
-            DashEnd();
+        _movement.MoveIn(new(movementDirection, 0.0f));
 
-        if (CanAccelerateMovement(movementDirection, movementStrength))
-        {
-            _rigidBody.linearVelocityX = Mathf.Clamp(_rigidBody.linearVelocityX + _acceleration * movementDirection * Time.deltaTime, -_movementSpeed * movementStrength, _movementSpeed * movementStrength);
-        }
-        //Horizontal friction, Unity's one causes the player to get stuck on walls :/
-        else if (_rigidBody.linearVelocityX != 0.0f)
-        {
-            float friction = (_dashing) ? _dashFriction : _standardFriction;
-            _rigidBody.linearVelocityX = Mathf.Sign(_rigidBody.linearVelocityX) * Mathf.Max(Mathf.Abs(_rigidBody.linearVelocityX) - friction * Time.deltaTime, 0.0f);
-        }
-        
-        if (movementStrength != 0.0f)
+        if (movementDirection != 0.0f)
             _lastMovementDirection = movementDirection;
     }
 
@@ -156,7 +120,7 @@ public class PlayerController : MonoBehaviour
         if (!_controllable || !_grounded || _dashing)
             return;
 
-        _rigidBody.linearVelocityY = _jumpPower;
+        _movement.Jump();
     }
 
     private void UpdateActiveHitbox()
@@ -175,7 +139,8 @@ public class PlayerController : MonoBehaviour
         _canDash = _grounded;
         _dashCooldown = _dashCooldownDurationSeconds;
 
-        _movementSpeed = _dashMovementSpeed;
+        _movement.Speed = _dashMovementSpeed;
+        _movement.Friction = _dashFriction;
 
         UpdateActiveHitbox();
 
@@ -188,7 +153,7 @@ public class PlayerController : MonoBehaviour
 
         Vector2 dashDirection = new(Mathf.Cos(dashAngle), Mathf.Sin(dashAngle));
 
-        _rigidBody.linearVelocity = dashDirection * _dashStrength;
+        _movement.Velocity = dashDirection * _dashStrength;
         _rigidBody.sharedMaterial = _dashPhysics;
 
         _animator.SetBool("Dashing", true);
@@ -200,7 +165,8 @@ public class PlayerController : MonoBehaviour
             return;
 
         _dashing = false;
-        _movementSpeed = _standardMovementSpeed;
+        _movement.Speed = _standardMovementSpeed;
+        _movement.Friction = _standardFriction;
 
         UpdateActiveHitbox();
 
@@ -217,6 +183,7 @@ public class PlayerController : MonoBehaviour
 
         _grounded = true;
         _canDash = true;
+        _movement.CanJump = true;
     }
 
     public void OnBecameAirbone()
@@ -224,6 +191,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player became airbone!");
 
         _grounded = false;
+        _movement.CanJump = false;
     }
 
     // Collided with something while dashing.

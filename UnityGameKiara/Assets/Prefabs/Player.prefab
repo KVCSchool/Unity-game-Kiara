@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -647116023
-  m_SortingLayer: 2
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2c49cf28dc983cc448540a498b9e5fe3, type: 3}
   m_Color: {r: 0.21960784, g: 0.54509807, b: 1, a: 1}
@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 5616146232819465321}
   - component: {fileID: 5499207435829333334}
   - component: {fileID: 6307003542003109248}
+  - component: {fileID: 1487831193228238125}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -222,12 +223,9 @@ MonoBehaviour:
   _dashAction: {fileID: 8353681389372425847, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   _standardPhysics: {fileID: 6200000, guid: a461b2125b33fbc439f2f191c3b39451, type: 2}
   _dashPhysics: {fileID: 6200000, guid: 12987aac5c6ba064787d312b37975b76, type: 2}
-  _movementSpeed: 15
   _standardMovementSpeed: 15
   _dashMovementSpeed: 5
-  _jumpPower: 24
   _dashStrength: 64
-  _acceleration: 120
   _standardFriction: 60
   _dashFriction: 20
   _dashCooldownDurationSeconds: 0.25
@@ -353,6 +351,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1487831193228238125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693094751185156833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a277808cfbe64469cd82517ea897db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GroundedMovement
+  _speed: 15
+  _acceleration: 120
+  _friction: 60
+  _canJump: 1
+  _jumpPower: 24
 --- !u!1 &1821302031683642071
 GameObject:
   m_ObjectHideFlags: 0
