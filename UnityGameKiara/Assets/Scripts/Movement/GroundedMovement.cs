@@ -53,6 +53,9 @@ public class GroundedMovement : Movement
     // Can we accelerate into the current direction?
     protected override bool CanAccelerate()
     {
+        if (!CanMove)
+            return false;
+
         //Important: sign returns 1 when movementAxis is 0.
         int direction = (int)SignZero(_direction.x);
 

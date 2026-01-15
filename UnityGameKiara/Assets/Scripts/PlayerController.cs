@@ -177,6 +177,16 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Dash ended!");
     }
 
+    public void ResetState()
+    {
+        if (_dashing)
+            DashEnd();
+
+        _dashCooldown = 0.0f;
+        _controllable = true;
+        _movement.CanMove = true;
+    }
+
     public void OnBecameGrounded()
     {
         Debug.Log("Player became grounded!");

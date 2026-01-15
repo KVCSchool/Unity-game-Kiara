@@ -7,6 +7,8 @@ public abstract class Movement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField]
+    private bool _canMove = true;
+    [SerializeField]
     private float _speed = 15.0f;
     [SerializeField]
     private float _acceleration = 120.0f;
@@ -27,6 +29,8 @@ public abstract class Movement : MonoBehaviour
         get => Velocity.y;
         set => Velocity = new(Velocity.x, value);
     }
+
+    public bool CanMove { get => _canMove; set => _canMove = value; }
 
     public float Speed { get => _speed; set => _speed = value; }
     public float Acceleration { get => _acceleration; set => _acceleration = value; }
