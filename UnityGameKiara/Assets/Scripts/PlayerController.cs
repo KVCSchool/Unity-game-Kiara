@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
             _dashCooldown -= Time.deltaTime;
 
         //automatically exit dash form if too slow
-        if (_dashing && Mathf.Abs(_movement.Velocity.magnitude) < 0.5f)
+        if (_dashing && Mathf.Abs(_movement.Velocity.magnitude) < 0.5f && _grounded)
             DashEnd();
 
         //Update movement velocity
