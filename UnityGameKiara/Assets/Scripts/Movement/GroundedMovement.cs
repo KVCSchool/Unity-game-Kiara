@@ -74,7 +74,7 @@ public class GroundedMovement : Movement
     }
 
     public override void MoveIn(Vector2 direction)
-        => _direction.x = direction.x;
+        => _direction.x = SignZero(direction.x);
 
     public void Jump()
     {
