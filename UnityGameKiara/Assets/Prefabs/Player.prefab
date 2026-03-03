@@ -227,7 +227,7 @@ MonoBehaviour:
   _dashMovementSpeed: 5
   _dashStrength: 64
   _standardFriction: 60
-  _dashFriction: 20
+  _dashFriction: 35
   _dashCooldownDurationSeconds: 0.25
 --- !u!58 &4744002937012359194
 CircleCollider2D:
