@@ -13,10 +13,15 @@ public class DamageTrigger : MonoBehaviour
     [SerializeField]
     private float _pushbackStrength = 5.0f;
 
+    [SerializeField]
+    private bool _playerOnly = false;
+
     public int Damage { get => _damage; set => _damage = value; }
 
     public bool Pushback { get => _pushback; set => _pushback = value; }
     public float PushbackStrength { get => _pushbackStrength; set => _pushbackStrength = value; }
+
+    public bool PlayerOnly { get => _playerOnly; set => _playerOnly = value; }
 
     private void Start()
     {
@@ -38,6 +43,9 @@ public class DamageTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (_playerOnly && !collision.CompareTag("Player"))
+            return;
+
         if (collision.gameObject.TryGetComponent(out DamageHitbox damageHitbox))
         {
             damageHitbox.Damage(_damage);
